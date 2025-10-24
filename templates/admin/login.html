@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - Flask User Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Admin Login</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="captcha_answer" class="form-label">Security Check</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <strong>{{ captcha_num1 }} + {{ captcha_num2 }} = ?</strong>
+                            </span>
+                            <input type="number" class="form-control" id="captcha_answer" name="captcha_answer"
+                                placeholder="Enter the sum" required>
+                        </div>
+                        <div class="form-text">Please solve the math problem above</div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a href="{{ url_for('main.index') }}" class="btn btn-link">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
