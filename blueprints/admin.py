@@ -73,8 +73,33 @@ def dashboard():
         flash('Please login to access admin panel.', 'error')
         return redirect(url_for('admin.login'))
     
-    users = User.query.all()
-    return render_template('admin/dashboard.html', users=users)
+    # Get sorting parameters
+    sort_by = request.args.get('sort', 'id')  # default sort by id
+    order = request.args.get('order', 'asc')  # default ascending order
+    
+    # Validate sort column
+    valid_columns = ['id', 'name', 'uid', 'email']
+    if sort_by not in valid_columns:
+        sort_by = 'id'
+    
+    # Validate order
+    if order not in ['asc', 'desc']:
+        order = 'asc'
+    
+    # Build query with sorting
+    query = User.query
+    if sort_by == 'id':
+        query = query.order_by(User.id.desc() if order == 'desc' else User.id.asc())
+    elif sort_by == 'name':
+        query = query.order_by(User.name.desc() if order == 'desc' else User.name.asc())
+    elif sort_by == 'uid':
+        query = query.order_by(User.uid.desc() if order == 'desc' else User.uid.asc())
+    elif sort_by == 'email':
+        query = query.order_by(User.email.desc() if order == 'desc' else User.email.asc())
+    
+    users = query.all()
+    
+    return render_template('admin/dashboard.html', users=users, sort_by=sort_by, order=order)
 
 @admin_bp.route('/edit/<int:user_id>', methods=['GET', 'POST'])
 def edit_user(user_id):

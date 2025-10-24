@@ -3,6 +3,48 @@
 {% block title %}Admin Dashboard - Flask User Management{% endblock %}
 
 {% block content %}
+<style>
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+    }
+
+    .sortable:hover {
+        background-color: rgba(13, 110, 253, 0.8) !important;
+        color: white !important;
+    }
+
+    .sort-icon {
+        opacity: 0.5;
+        font-size: 0.8em;
+        margin-left: 5px;
+    }
+
+    .sortable:hover .sort-icon {
+        opacity: 1;
+        color: white !important;
+    }
+
+    .active-sort {
+        opacity: 1;
+        color: #ffc107;
+        margin-left: 5px;
+    }
+
+    .sortable:hover .active-sort {
+        color: #ffc107 !important;
+    }
+
+    .sortable .sort-icon {
+        display: inline;
+    }
+
+    .sortable .active-sort+.sort-icon {
+        display: none;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Admin Dashboard</h2>
     <div>
@@ -22,13 +64,41 @@
     <div class="card-body">
         {% if users %}
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover" id="usersTable">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>User ID</th>
-                        <th>Email</th>
+                        <th class="sortable" data-column="id">
+                            ID
+                            {% if sort_by == 'id' %}
+                            <i class="bi bi-arrow-{{ 'up' if order == 'asc' else 'down' }} active-sort"></i>
+                            {% else %}
+                            <i class="bi bi-arrow-down-up sort-icon"></i>
+                            {% endif %}
+                        </th>
+                        <th class="sortable" data-column="name">
+                            Name
+                            {% if sort_by == 'name' %}
+                            <i class="bi bi-arrow-{{ 'up' if order == 'asc' else 'down' }} active-sort"></i>
+                            {% else %}
+                            <i class="bi bi-arrow-down-up sort-icon"></i>
+                            {% endif %}
+                        </th>
+                        <th class="sortable" data-column="uid">
+                            User ID
+                            {% if sort_by == 'uid' %}
+                            <i class="bi bi-arrow-{{ 'up' if order == 'asc' else 'down' }} active-sort"></i>
+                            {% else %}
+                            <i class="bi bi-arrow-down-up sort-icon"></i>
+                            {% endif %}
+                        </th>
+                        <th class="sortable" data-column="email">
+                            Email
+                            {% if sort_by == 'email' %}
+                            <i class="bi bi-arrow-{{ 'up' if order == 'asc' else 'down' }} active-sort"></i>
+                            {% else %}
+                            <i class="bi bi-arrow-down-up sort-icon"></i>
+                            {% endif %}
+                        </th>
                         <th width="150">Actions</th>
                     </tr>
                 </thead>
@@ -99,6 +169,26 @@
                 document.getElementById('deleteForm').action = '{{ url_for("admin.delete_user", user_id=0) }}'.replace('0', userId);
 
                 new bootstrap.Modal(document.getElementById('deleteModal')).show();
+            });
+        });
+
+        // Add sorting functionality
+        document.querySelectorAll('.sortable').forEach(function (header) {
+            header.addEventListener('click', function () {
+                const column = this.getAttribute('data-column');
+                const currentSort = '{{ sort_by|default("id") }}';
+                const currentOrder = '{{ order|default("asc") }}';
+
+                let newOrder = 'asc';
+                if (column === currentSort && currentOrder === 'asc') {
+                    newOrder = 'desc';
+                }
+
+                // Redirect with new sorting parameters
+                const url = new URL(window.location);
+                url.searchParams.set('sort', column);
+                url.searchParams.set('order', newOrder);
+                window.location.href = url.toString();
             });
         });
     });

@@ -9,6 +9,7 @@ A Flask blueprint application that allows users to register with their informati
 - SQLite database storage
 - Admin login system with math captcha security
 - Admin dashboard with user management (edit/delete users)
+- Sortable user table (by ID, Name, UID, Email)
 - CSV export functionality for user data
 - Bootstrap-styled responsive UI
 - Blueprint architecture for modular code
@@ -41,6 +42,7 @@ python run.py
   - Password: `Academy!234`
 - Solve the math captcha (simple addition)
 - View all registered users in the admin dashboard
+- Sort users by clicking on column headers (ID, Name, UID, Email)
 - Edit user information by clicking the edit button
 - Delete users with confirmation modal
 - Export all user data to CSV format
